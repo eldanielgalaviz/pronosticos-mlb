@@ -1,7 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
 import { GamesService } from '../games/games.service';
 import { TeamsService } from '../teams/teams.service';
 import { PlayersService } from '../players/players.service';
+import { GameDetailService } from '../game-detail/game-detail.service';
 
 @Injectable()
 export class PredictionsService {
@@ -9,125 +10,198 @@ export class PredictionsService {
     private readonly gamesService: GamesService,
     private readonly teamsService: TeamsService,
     private readonly playersService: PlayersService,
+    private readonly gameDetailService: GameDetailService,
+
   ) {}
 
-  // Función sigmoide para convertir score en probabilidad
   private sigmoid(x: number): number {
     return 1 / (1 + Math.exp(-x));
   }
 
-  // Convierte string numérico a float seguro
   private parseStat(value: any): number {
-    if (!value) return 0;
+    if (!value && value !== 0) throw new BadRequestException('Estadísticas incompletas: valor indefinido');
     if (typeof value === 'string') return parseFloat(value.replace(',', '')) || 0;
     return value;
   }
 
-  async predictGame(gamePk: number) {
-    const game = await this.gamesService.getGameByPk(gamePk);
-    if (!game) throw new NotFoundException(`Juego con gamePk ${gamePk} no encontrado`);
+  private async calcTeamHitting(roster: any[], isHome: boolean) {
+    let totalPA = 0;
+    let totalBB = 0;
+    let totalH = 0;
+    let total2B = 0;
+    let total3B = 0;
+    let totalHR = 0;
+    let totalAB = 0;
+    let totalHBP = 0;
+    let totalSF = 0;
 
-    const homeTeamId = game.homeTeamId;
-    const awayTeamId = game.awayTeamId;
+    for (const player of roster) {
+      const stats = await this.playersService.getPlayerStats(player.id, 'hitting');
+      if (!stats) continue;
 
-    // 1️⃣ Obtener info de equipos
-    const homeTeam = await this.teamsService.getTeamById(homeTeamId);
-    const awayTeam = await this.teamsService.getTeamById(awayTeamId);
+      const split = (isHome ? stats.splits?.home : stats.splits?.away) || stats;
+      if (!split) throw new BadRequestException(`Estadísticas de bateo no disponibles para jugador ${player.id}`);
 
-    // 2️⃣ Obtener roster
-    const homeRoster = await this.playersService.getRoster(homeTeamId);
-    const awayRoster = await this.playersService.getRoster(awayTeamId);
+      const ab = this.parseStat(split.atBats);
+      const h = this.parseStat(split.hits);
+      const bb = this.parseStat(split.baseOnBalls);
+      const hbp = this.parseStat(split.hitByPitch);
+      const sf = this.parseStat(split.sacFlies);
+      const dbl = this.parseStat(split.doubles);
+      const tpl = this.parseStat(split.triples);
+      const hr = this.parseStat(split.homeRuns);
 
-    // 3️⃣ Obtener pitchers titulares
-    const homePitcherId = game.probablePitchers?.homeId || (await this.playersService.getLastStartingPitcher(homeTeamId));
-    const awayPitcherId = game.probablePitchers?.awayId || (await this.playersService.getLastStartingPitcher(awayTeamId));
-
-    if (!homePitcherId || !awayPitcherId) {
-      throw new NotFoundException('Probable pitcher no disponible para predicción');
+      totalAB += ab;
+      totalH += h;
+      totalBB += bb;
+      totalHBP += hbp;
+      totalSF += sf;
+      total2B += dbl;
+      total3B += tpl;
+      totalHR += hr;
+      totalPA += ab + bb + hbp + sf;
     }
 
-    const homePitcherStats = await this.playersService.getPlayerStats(homePitcherId, 'pitching');
-    const awayPitcherStats = await this.playersService.getPlayerStats(awayPitcherId, 'pitching');
+    if (totalPA === 0) throw new BadRequestException('Estadísticas de bateo insuficientes para el equipo');
 
-    // 4️⃣ Calcular estadísticas de bateo diferenciando home/away
-    const calcTeamHitting = async (roster, isHome: boolean) => {
-      let totalAVG = 0;
-      let totalHRPerGame = 0;
-      let count = 0;
+    const wOBA = ((0.69 * totalBB) + (0.72 * totalHBP) + (0.89 * totalH) + (1.27 * total2B) + (1.62 * total3B) + (2.10 * totalHR)) / totalPA;
+    const babip = totalAB ? (totalH - totalHR) / (totalAB - totalHR - totalSF + totalSF) : 0;
+    const hrPerGame = totalAB ? totalHR / (totalAB / 4) : 0;
 
-      for (const player of roster) {
-        try {
-          const stats = await this.playersService.getPlayerStats(player.id, 'hitting');
-          if (!stats) continue;
+    return { wOBA, babip, hrPerGame };
+  }
 
-          // ⚡ Usa splits home/away si existen
-          let split = isHome ? stats.splits?.home : stats.splits?.away;
-          if (!split) split = stats; // fallback general si no hay split
+  private parsePitcherStats(stats: any, isHome: boolean) {
+    if (!stats) throw new BadRequestException('Estadísticas de pitcheo no disponibles');
 
-          const gamesPlayed = split.gamesPlayed || 1;
-          totalAVG += this.parseStat(split.avg || 0);
-          totalHRPerGame += (this.parseStat(split.homeRuns) || 0) / gamesPlayed;
-          count++;
-        } catch {
-          continue;
-        }
-      }
+    const split = (isHome ? stats.splits?.home : stats.splits?.away) || stats;
+    if (!split) throw new BadRequestException('Estadísticas de pitcheo no disponibles para este pitcher');
 
-      return {
-        avg: count ? totalAVG / count : 0,
-        hrPerGame: count ? totalHRPerGame / count : 0,
-      };
-    };
-
-    const homeHitting = await calcTeamHitting(homeRoster, true);
-    const awayHitting = await calcTeamHitting(awayRoster, false);
-
-    // 5️⃣ Preparar estadísticas de pitchers (tasa por inning)
-    const parsePitcherStats = (stats, isHome: boolean) => {
-      let split = isHome ? stats.splits?.home : stats.splits?.away;
-      if (!split) split = stats; // fallback general
-
-      const innings = parseFloat(split.inningsPitched) || 1;
-      return {
-        era: this.parseStat(split.era || 4.5),
-        whip: this.parseStat(split.whip || 1.3),
-        kPer9: ((this.parseStat(split.strikeOuts) || 0) / innings) * 9,
-        hrPer9: ((this.parseStat(split.homeRuns) || 0) / innings) * 9,
-      };
-    };
-
-    const homePitcher = parsePitcherStats(homePitcherStats, true);
-    const awayPitcher = parsePitcherStats(awayPitcherStats, false);
-
-    // 6️⃣ Calcular score relativo
-    const homeScore = 
-      homeHitting.avg / awayPitcher.era +
-      homeHitting.hrPerGame / awayPitcher.hrPer9 +
-      homePitcher.kPer9 / awayPitcher.kPer9;
-
-    const awayScore = 
-      awayHitting.avg / homePitcher.era +
-      awayHitting.hrPerGame / homePitcher.hrPer9 +
-      awayPitcher.kPer9 / homePitcher.kPer9;
-
-    // 7️⃣ Convertir a probabilidad porcentual
-    const homeWinProb = this.sigmoid(homeScore - awayScore) * 100;
-    const awayWinProb = 100 - homeWinProb;
+    const innings = parseFloat(split.inningsPitched);
+    if (!innings || innings === 0) throw new BadRequestException('Innings pitched no disponible');
 
     return {
-      gamePk,
-      date: game.gameDate,
-      venue: game.venue,
-      homeTeam: homeTeam.name,
-      awayTeam: awayTeam.name,
-      homeWinProb: homeWinProb.toFixed(1) + '%',
-      awayWinProb: awayWinProb.toFixed(1) + '%',
-      factors: {
-        homeHitting,
-        awayHitting,
-        homePitcherStats,
-        awayPitcherStats,
-      },
+      era: this.parseStat(split.era),
+      whip: this.parseStat(split.whip),
+      kPer9: (this.parseStat(split.strikeOuts) / innings) * 9,
+      hrPer9: (this.parseStat(split.homeRuns) / innings) * 9,
     };
   }
+
+  private async calcBullpenStats(teamId: number) {
+    const roster = await this.playersService.getRoster(teamId);
+    const bullpenPitchers = roster.filter(p => !p.isStarter);
+    if (!bullpenPitchers.length) throw new BadRequestException('Estadísticas de bullpen no disponibles');
+
+    let totalERA = 0;
+    let totalWHIP = 0;
+    let count = 0;
+
+    for (const pitcher of bullpenPitchers) {
+      const stats = await this.playersService.getPlayerStats(pitcher.id, 'pitching');
+      if (!stats) continue;
+
+      totalERA += this.parseStat(stats.era);
+      totalWHIP += this.parseStat(stats.whip);
+      count++;
+    }
+
+    if (count === 0) throw new BadRequestException('Estadísticas de bullpen insuficientes');
+
+    return { era: totalERA / count, whip: totalWHIP / count };
+  }
+
+  private async calcRecentForm(teamId: number, games = 10) {
+    const recentGames = await this.gamesService.getRecentGames(teamId, games);
+    if (!recentGames || !recentGames.length)
+      throw new BadRequestException('No se encontraron juegos recientes para calcular forma reciente');
+
+    const wins = recentGames.filter(g => g.winnerId === teamId).length;
+    return wins / recentGames.length;
+  }
+
+async predictGame(gamePk: number) {
+  // Usamos GameDetailService para obtener los pitchers correctos
+  const game = await this.gameDetailService.getGameDetail(gamePk);
+  if (!game) throw new NotFoundException(`Juego con gamePk ${gamePk} no encontrado`);
+
+  const homeTeam = await this.teamsService.getTeamById(game.homeTeamId);
+  const awayTeam = await this.teamsService.getTeamById(game.awayTeamId);
+
+  const homeRoster = await this.playersService.getRoster(game.homeTeamId);
+  const awayRoster = await this.playersService.getRoster(game.awayTeamId);
+
+  const homeStarterName = game.probablePitchers.home;
+  const awayStarterName = game.probablePitchers.away;
+
+  if (!homeStarterName || !awayStarterName) {
+    throw new NotFoundException('Probable pitcher no disponible para predicción');
+  }
+
+  // Buscar IDs de los pitchers dentro del roster
+  const homePitcher = homeRoster.find(p => p.name === homeStarterName);
+  const awayPitcher = awayRoster.find(p => p.name === awayStarterName);
+
+  if (!homePitcher || !awayPitcher) {
+    throw new NotFoundException('No se encontró el pitcher en el roster del equipo');
+  }
+
+  const homePitcherStats = this.parsePitcherStats(
+    await this.playersService.getPlayerStats(homePitcher.id, 'pitching'), 
+    true
+  );
+  const awayPitcherStats = this.parsePitcherStats(
+    await this.playersService.getPlayerStats(awayPitcher.id, 'pitching'), 
+    false
+  );
+
+  const homeHitting = await this.calcTeamHitting(homeRoster, true);
+  const awayHitting = await this.calcTeamHitting(awayRoster, false);
+  const homeBullpen = await this.calcBullpenStats(game.homeTeamId);
+  const awayBullpen = await this.calcBullpenStats(game.awayTeamId);
+  const homeRecentForm = await this.calcRecentForm(game.homeTeamId);
+  const awayRecentForm = await this.calcRecentForm(game.awayTeamId);
+
+  const homeScore =
+    homeHitting.wOBA * 0.3 +
+    homePitcherStats.kPer9 * 0.2 -
+    awayPitcherStats.era * 0.2 +
+    homeBullpen.era * -0.1 +
+    homeRecentForm * 0.15;
+
+  const awayScore =
+    awayHitting.wOBA * 0.3 +
+    awayPitcherStats.kPer9 * 0.2 -
+    homePitcherStats.era * 0.2 +
+    awayBullpen.era * -0.1 +
+    awayRecentForm * 0.15;
+
+  const homeWinProb = this.sigmoid(homeScore - awayScore) * 100;
+  const awayWinProb = 100 - homeWinProb;
+
+  return {
+    gamePk,
+    date: game.gameDate,
+    venue: game.venue,
+    homeTeam: homeTeam.name,
+    awayTeam: awayTeam.name,
+    homeStarterName,
+    awayStarterName,
+    homeWinProb: homeWinProb.toFixed(1) + '%',
+    awayWinProb: awayWinProb.toFixed(1) + '%',
+    factors: {
+      homeHitting,
+      awayHitting,
+      homePitcherStats,
+      awayPitcherStats,
+      homeBullpen,
+      awayBullpen,
+      homeRecentForm,
+      awayRecentForm,
+    },
+  };
+}
+
+
+
 }

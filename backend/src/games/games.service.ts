@@ -10,26 +10,56 @@ export class GamesService {
     private configService: ConfigService,
   ) {}
 
-  async getGamesByDate(date: string) {
-    const base = this.configService.get<string>('MLB_API_BASE') || 'https://statsapi.mlb.com';
-    const url = `${base}/api/v1/schedule?sportId=1&date=${date}`;
-    const { data } = await this.http.axiosRef.get(url);
+async getGamesByDate(date: string) {
+  const base = this.configService.get<string>('MLB_API_BASE') || 'https://statsapi.mlb.com';
+  const url = `${base}/api/v1/schedule?sportId=1&date=${date}`;
+  const { data } = await this.http.axiosRef.get(url);
 
-    return data.dates[0]?.games.map((game: any) => ({
-      gamePk: game.gamePk,
-      date: game.gameDate,
-      status: game.status.detailedState,
-      home: game.teams.home.team.name,
-      away: game.teams.away.team.name,
-      venue: game.venue.name,
-      homeTeamId: game.teams.home.team.id,
-      awayTeamId: game.teams.away.team.id,
-      probablePitchers: {
-        homeId: game.teams.home.probablePitcher?.id,
-        awayId: game.teams.away.probablePitcher?.id,
-      },
-    })) || [];
+  return data.dates[0]?.games.map((game: any) => ({
+    gamePk: game.gamePk,
+    date: game.gameDate,
+    status: game.status.detailedState,
+    home: game.teams.home.team.name,
+    away: game.teams.away.team.name,
+    venue: game.venue.name,
+    homeTeamId: game.teams.home.team.id,
+    awayTeamId: game.teams.away.team.id,
+    homeScore: game.teams.home.score,   // ✅ agregar
+    awayScore: game.teams.away.score,   // ✅ agregar
+    probablePitchers: {
+      homeId: game.teams.home.probablePitcher?.id,
+      awayId: game.teams.away.probablePitcher?.id,
+    },
+  })) || [];
+}
+
+
+async getRecentGames(teamId: number, limit: number = 10) {
+  const recentGames: any[] = []; // ⚡ indicamos tipo explícito
+  const today = new Date();
+
+  for (let i = 0; i < 20; i++) { 
+    const date = new Date(today);
+    date.setDate(today.getDate() - i);
+    const dateStr = date.toISOString().split('T')[0];
+    const games = await this.getGamesByDate(dateStr);
+
+    for (const game of games) {
+      if (game.homeTeamId === teamId || game.awayTeamId === teamId) {
+        recentGames.push({
+          ...game,
+          winnerId: game.homeScore > game.awayScore ? game.homeTeamId : game.awayTeamId,
+        });
+        if (recentGames.length >= limit) break;
+      }
+    }
+    if (recentGames.length >= limit) break;
   }
+
+  return recentGames.slice(0, limit);
+}
+
+
 
   async getGameByPk(gamePk: number) {
     // Primero intentamos obtener datos del live feed
