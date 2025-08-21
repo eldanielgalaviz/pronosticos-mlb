@@ -4,6 +4,7 @@ import { GamesModule } from './games/games.module';
 import { GameDetailModule } from './game-detail/game-detail.module';
 import { TeamsModule } from './teams/teams.module';
 import { PlayersModule } from './players/players.module';
+import { PredictionsModule } from './predictions/predictions.module';
 
 @Module({
   imports: [
@@ -13,6 +14,8 @@ import { PlayersModule } from './players/players.module';
     TeamsModule,
     PlayersModule,
     TeamsModule,
+    PredictionsModule,
   ],
+  
 })
 export class AppModule {}

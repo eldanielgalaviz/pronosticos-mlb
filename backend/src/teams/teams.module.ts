@@ -7,5 +7,6 @@ import { HttpModule } from '@nestjs/axios';
   imports: [HttpModule],
   providers: [TeamsService],
   controllers: [TeamsController],
+  exports: [TeamsService], // Exporting TeamsService for use in other modules
 })
 export class TeamsModule {}
