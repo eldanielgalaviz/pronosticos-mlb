@@ -11,7 +11,10 @@ async function bootstrap() {
 
   // Habilitar CORS nativamente en NestJS
   app.enableCors({
-    origin: 'http://localhost:3000', // frontend
+    origin:[ 'http://localhost:3000', // frontend
+    'https://pronosticos-2ag08yqxg-jesusdanielgfim-uasedumxs-projects.vercel.app/',
+      'https://*.vercel.app', // Para cualquier subdominio de Vercel
+      'https://tu-dominio-personalizado.com' ],// Si tienes dominio custom
     methods: 'GET,POST,PUT,DELETE,OPTIONS',
     credentials: true,
   });
