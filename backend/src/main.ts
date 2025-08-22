@@ -6,13 +6,20 @@ import { ConfigService } from '@nestjs/config';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
-  // Opcional: validación global
+  // Validación global
   app.useGlobalPipes(new ValidationPipe({ whitelist: true }));
 
-  // Obtener puerto desde ConfigService (mapear a number) o fallback a process.env o 3000
+  // Habilitar CORS nativamente en NestJS
+  app.enableCors({
+    origin: 'http://localhost:3000', // frontend
+    methods: 'GET,POST,PUT,DELETE,OPTIONS',
+    credentials: true,
+  });
+
+  // Obtener puerto desde ConfigService (mapear a number) o fallback
   const configService = app.get(ConfigService);
   const portEnv = configService?.get<string>('PORT') ?? process.env.PORT;
-  const port = Number(portEnv) || 3000;
+  const port = Number(portEnv) || 3001;
 
   await app.listen(port);
   console.log(`🚀 Server running: http://localhost:${port}`);
