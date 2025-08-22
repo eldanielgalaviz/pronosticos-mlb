@@ -10,14 +10,12 @@ async function bootstrap() {
   app.useGlobalPipes(new ValidationPipe({ whitelist: true }));
 
   // Habilitar CORS nativamente en NestJS
-app.enableCors({
-  origin: [
-    'http://localhost:3000',
-    /^https:\/\/.*\.vercel\.app$/, // Todos los dominios .vercel.app
-  ],
-  methods: 'GET,POST,PUT,DELETE,OPTIONS',
-  credentials: true,
-});
+  app.enableCors({
+    origin:[ 'http://localhost:3000', // frontend
+    'https://pronosticos-2ag08yqxg-jesusdanielgfim-uasedumxs-projects.vercel.app/'], // producción
+    methods: 'GET,POST,PUT,DELETE,OPTIONS',
+    credentials: true,
+  });
 
   // Obtener puerto desde ConfigService (mapear a number) o fallback
   const configService = app.get(ConfigService);

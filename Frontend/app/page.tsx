@@ -1,5 +1,6 @@
 import { GamesList } from "@/components/games-list"
 import { Header } from "@/components/header"
+import Script from 'next/script'
 
 export default function HomePage() {
   return (
@@ -14,6 +15,14 @@ export default function HomePage() {
         </div>
         <GamesList />
       </main>
+      
+      {/* Google AdSense Script */}
+      <Script
+        async
+        src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3982270058016354"
+        crossOrigin="anonymous"
+        strategy="afterInteractive"
+      />
     </div>
   )
 }
