@@ -16,7 +16,7 @@ export default function HomePage() {
         <GamesList />
       </main>
       
-      {/* Google AdSense Script */}
+      {/* Google AdSense Script - FORMATO CORRECTO PARA NEXT.JS */}
       <Script
         async
         src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3982270058016354"
