@@ -10,12 +10,33 @@ async function bootstrap() {
   app.useGlobalPipes(new ValidationPipe({ whitelist: true }));
 
   // Habilitar CORS nativamente en NestJS
-  app.enableCors({
-    origin:[ 'http://localhost:3000', // frontend
-    'https://pronosticos-fx72b9297-jesusdanielgfim-uasedumxs-projects.vercel.app/'], // producción
-    methods: 'GET,POST,PUT,DELETE,OPTIONS',
-    credentials: true,
-  });
+app.enableCors({
+  origin: (origin, callback) => {
+    const allowedPatterns = [
+      'http://localhost:3000',
+      // Patrón para cualquier deployment de tu proyecto en Vercel
+      /^https:\/\/pronosticos-[a-zA-Z0-9]+-jesusdanielgfim-uasedumxs-projects\.vercel\.app$/
+    ];
+    
+    if (!origin) return callback(null, true);
+    
+    const isAllowed = allowedPatterns.some(pattern => {
+      if (typeof pattern === 'string') {
+        return pattern === origin;
+      }
+      return pattern.test(origin);
+    });
+    
+    if (isAllowed) {
+      callback(null, true);
+    } else {
+      console.log('CORS blocked for origin:', origin);
+      callback(new Error('No permitido por CORS'));
+    }
+  },
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  credentials: true,
+});
 
   // Obtener puerto desde ConfigService (mapear a number) o fallback
   const configService = app.get(ConfigService);
