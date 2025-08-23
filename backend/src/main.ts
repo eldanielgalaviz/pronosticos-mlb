@@ -13,7 +13,7 @@ async function bootstrap() {
 app.enableCors({
   origin: (origin, callback) => {
     const allowedPatterns = [
-      'http://localhost:3000',
+      'https://pronosticosmlb.vercel.app/',
       // Patrón para cualquier deployment de tu proyecto en Vercel
       /^https:\/\/pronosticos-[a-zA-Z0-9]+-jesusdanielgfim-uasedumxs-projects\.vercel\.app$/
     ];
