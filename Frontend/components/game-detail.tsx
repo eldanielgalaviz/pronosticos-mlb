@@ -127,7 +127,7 @@ export function GameDetailComponent({ gamePk }: GameDetailProps) {
                   Los {prediction.homeTeam} tienen ventaja debido a su superior ofensiva (wOBA:{" "}
                   {prediction.factors.homeHitting.wOBA}) y la calidad de su pitcher abridor {prediction.homeStarterName}{" "}
                   (ERA: {prediction.factors.homePitcherStats.era}). Su forma reciente (
-                  {(prediction.factors.homeRecentForm * 100).toFixed(0)}% de victorias) también favorece el pronóstico.
+                  {(prediction.factors.homeRecentForm * 100).toFixed(0)}% de victorias) de los ultimos 10 partidos también favorece el pronóstico.
                 </p>
               </div>
             </CardContent>

@@ -17,7 +17,7 @@ export default function HomePage() {
           <div className="mb-8">
             <h1 className="text-4xl font-bold text-foreground mb-2">MLB Predictions & Analytics</h1>
             <p className="text-muted-foreground text-lg">
-              Análisis avanzado y predicciones para los próximos juegos de la MLB
+              Análisis avanzado y predicciones para los próximos juegos de la MLB Basado en los ultimos 10 juegos
             </p>
           </div>
           <GamesList />
