@@ -22,6 +22,24 @@ export function GameCard({ game }: GameCardProps) {
     minute: "2-digit",
   })
 
+  // Función para obtener el variant y texto del status
+  const getStatusDisplay = (status: string) => {
+    const statusConfig = {
+      'Scheduled': { variant: 'secondary', text: 'Programado', color: 'bg-blue-100 text-blue-800 hover:bg-blue-200' },
+      'Pre-Game': { variant: 'secondary', text: 'Próximamente', color: 'bg-blue-100 text-blue-800 hover:bg-blue-200' },
+      'In Progress': { variant: 'destructive', text: 'En Vivo', color: 'bg-red-100 text-red-800 hover:bg-red-200' },
+      'Live': { variant: 'destructive', text: 'En Vivo', color: 'bg-red-100 text-red-800 hover:bg-red-200' },
+      'Final': { variant: 'outline', text: 'Finalizado', color: 'bg-gray-100 text-gray-800 hover:bg-gray-200' },
+      'Postponed': { variant: 'secondary', text: 'Pospuesto', color: 'bg-yellow-100 text-yellow-800 hover:bg-yellow-200' },
+      'Cancelled': { variant: 'outline', text: 'Cancelado', color: 'bg-gray-100 text-gray-800 hover:bg-gray-200' },
+      'Warmup': { variant: 'default', text: 'Calentamiento', color: 'bg-orange-100 text-orange-800 hover:bg-orange-200' },
+    }
+    
+    return statusConfig[status] || { variant: 'secondary', text: status, color: 'bg-gray-100 text-gray-800 hover:bg-gray-200' }
+  }
+
+  const statusDisplay = getStatusDisplay(game.status)
+
   // Cargar detalles del juego para obtener pitchers probables
   useEffect(() => {
     const loadGameDetail = async () => {
@@ -47,8 +65,12 @@ export function GameCard({ game }: GameCardProps) {
     <Card className="hover:shadow-lg transition-shadow duration-200 border-border bg-card">
       <CardHeader className="pb-3">
         <div className="flex items-center justify-between">
-          <Badge variant="secondary" className="text-xs">
-            {game.status}
+          {/* Badge con colores personalizados */}
+          <Badge 
+            variant={statusDisplay.variant} 
+            className={`text-xs ${statusDisplay.color}`}
+          >
+            {statusDisplay.text}
           </Badge>
           <div className="flex items-center gap-1 text-sm text-muted-foreground">
             <Clock className="h-4 w-4" />
