@@ -91,10 +91,31 @@ export function GameCard({ game }: GameCardProps) {
 
         {/* Score if game is finished or in progress */}
         {game.homeScore !== undefined && game.awayScore !== undefined && (
-          <div className="text-center bg-muted/50 rounded-lg p-2">
-            <div className="text-sm font-medium">
-              {game.away} {game.awayScore} - {game.homeScore} {game.home}
+          <div className="text-center bg-muted/50 rounded-lg p-3">
+            <div className="text-sm font-medium flex items-center justify-center gap-3">
+              <div className="flex items-center gap-2">
+                <span className="text-foreground">{game.away}</span>
+                <span className="bg-red-600 text-white px-2 py-1 rounded font-bold min-w-[24px]">
+                  {game.awayScore}
+                </span>
+              </div>
+              <span className="text-muted-foreground font-medium">-</span>
+              <div className="flex items-center gap-2">
+                <span className="bg-red-600 text-white px-2 py-1 rounded font-bold min-w-[24px]">
+                  {game.homeScore}
+                </span>
+                <span className="text-foreground">{game.home}</span>
+              </div>
             </div>
+            {/* Indicador de LIVE si está en progreso */}
+            {(game.status === 'In Progress' || game.status === 'Live') && (
+              <div className="mt-2">
+                <span className="inline-flex items-center gap-1 bg-red-100 text-red-800 text-xs px-2 py-1 rounded-full font-medium">
+                  <div className="w-2 h-2 bg-red-600 rounded-full animate-pulse"></div>
+                  EN VIVO
+                </span>
+              </div>
+            )}
           </div>
         )}
 
