@@ -126,8 +126,8 @@ export function GameDetailComponent({ gamePk }: GameDetailProps) {
                 <p className="text-sm text-muted-foreground">
                   Los {prediction.homeTeam} tienen ventaja debido a su superior ofensiva (wOBA:{" "}
                   {prediction.factors.homeHitting.wOBA}) y la calidad de su pitcher abridor {prediction.homeStarterName}{" "}
-                  (ERA: {prediction.factors.homePitcherStats.era}). Su forma reciente (
-                  {(prediction.factors.homeRecentForm * 100).toFixed(0)}% de victorias) de los ultimos 10 partidos también favorece el pronóstico.
+                  (ERA: {prediction.factors.homePitcherStats.era}). Sus (
+                  { ( prediction.factors.homeRecentForm * 10).toFixed(0)}) victorias de los ultimos 10 partidos también favorece el pronóstico.
                 </p>
               </div>
             </CardContent>
@@ -139,7 +139,7 @@ export function GameDetailComponent({ gamePk }: GameDetailProps) {
               <TabsTrigger value="pitchers">Pitchers</TabsTrigger>
               <TabsTrigger value="hitting">Bateo</TabsTrigger>
               <TabsTrigger value="bullpen">Bullpen</TabsTrigger>
-              <TabsTrigger value="form">Forma</TabsTrigger>
+              <TabsTrigger value="form">Victorias</TabsTrigger>
             </TabsList>
 
             <TabsContent value="pitchers">
@@ -300,9 +300,9 @@ export function GameDetailComponent({ gamePk }: GameDetailProps) {
                   <CardContent>
                     <div className="space-y-2">
                       <div className="flex justify-between">
-                        <span className="text-muted-foreground">Forma Reciente:</span>
+                        <span className="text-muted-foreground">Victorias recientes de los ultimos 10 partidos:</span>
                         <span className="font-medium text-foreground">
-                          {(prediction.factors.awayRecentForm * 100).toFixed(0)}%
+                          {(prediction.factors.awayRecentForm * 10).toFixed(0)}
                         </span>
                       </div>
                       <Progress value={prediction.factors.awayRecentForm * 100} className="h-2" />
@@ -320,9 +320,9 @@ export function GameDetailComponent({ gamePk }: GameDetailProps) {
                   <CardContent>
                     <div className="space-y-2">
                       <div className="flex justify-between">
-                        <span className="text-muted-foreground">Forma Reciente:</span>
+                        <span className="text-muted-foreground">Victorias recientes de los ultimos 10 partidos :</span>
                         <span className="font-medium text-foreground">
-                          {(prediction.factors.homeRecentForm * 100).toFixed(0)}%
+                          {(prediction.factors.homeRecentForm * 10).toFixed(0)}
                         </span>
                       </div>
                       <Progress value={prediction.factors.homeRecentForm * 100} className="h-2" />

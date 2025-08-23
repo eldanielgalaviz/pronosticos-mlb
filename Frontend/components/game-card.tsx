@@ -171,7 +171,7 @@ export function GameCard({ game }: GameCardProps) {
         <Link href={`/game/${game.gamePk}`}>
           <Button className="w-full" size="sm">
             <TrendingUp className="h-4 w-4 mr-2" />
-            Ver Predicción
+            Ver Predicción y Estadísticas
           </Button>
         </Link>
       </CardContent>
