@@ -65,16 +65,31 @@ export function GameCard({ game }: GameCardProps) {
     <Card className="hover:shadow-lg transition-shadow duration-200 border-border bg-card">
       <CardHeader className="pb-3">
         <div className="flex items-center justify-between">
-          {/* Badge con colores personalizados */}
-          <Badge 
-            variant={statusDisplay.variant} 
-            className={`text-xs ${statusDisplay.color}`}
-          >
-            {statusDisplay.text}
-          </Badge>
-          <div className="flex items-center gap-1 text-sm text-muted-foreground">
-            <Clock className="h-4 w-4" />
-            {gameTime}
+          {/* Badge con colores personalizados - Solo mostrar si NO está en vivo */}
+          {!(game.status === 'In Progress' || game.status === 'Live') && (
+            <Badge 
+              variant={statusDisplay.variant} 
+              className={`text-xs ${statusDisplay.color}`}
+            >
+              {statusDisplay.text}
+            </Badge>
+          )}
+          
+          {/* Si está en vivo, mostrar el indicador EN VIVO en lugar del badge */}
+          {(game.status === 'In Progress' || game.status === 'Live') && (
+            <span className="inline-flex items-center gap-1 bg-red-100 text-red-800 text-xs px-2 py-1 rounded-full font-medium">
+              <div className="w-2 h-2 bg-red-600 rounded-full animate-pulse"></div>
+              EN VIVO
+            </span>
+          )}
+          
+          <div className="flex items-center gap-2">
+            <div className="flex items-center gap-1 text-sm text-muted-foreground">
+              <Clock className="h-4 w-4" />
+              {gameTime}
+            </div>
+            {/* Indicador EN VIVO al lado de la hora */}
+
           </div>
         </div>
       </CardHeader>
@@ -108,14 +123,7 @@ export function GameCard({ game }: GameCardProps) {
               </div>
             </div>
             {/* Indicador de LIVE si está en progreso */}
-            {(game.status === 'In Progress' || game.status === 'Live') && (
-              <div className="mt-2">
-                <span className="inline-flex items-center gap-1 bg-red-100 text-red-800 text-xs px-2 py-1 rounded-full font-medium">
-                  <div className="w-2 h-2 bg-red-600 rounded-full animate-pulse"></div>
-                  EN VIVO
-                </span>
-              </div>
-            )}
+  
           </div>
         )}
 
