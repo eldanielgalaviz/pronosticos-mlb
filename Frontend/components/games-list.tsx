@@ -15,25 +15,19 @@ interface Game {
 export function GamesList() {
   const [games, setGames] = useState<Game[]>([])
   const [loading, setLoading] = useState(true) // ✅ Empezar con loading en true
-  const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
     const loadGames = async () => {
       setLoading(true) // ✅ Mostrar loading
-      setError(null)
       
       try {
         // Tu llamada al backend aquí
         const response = await fetch('/api/games') // Ajusta tu endpoint
-        if (!response.ok) {
-          throw new Error('Error al cargar juegos')
-        }
-        
         const gamesData = await response.json()
         setGames(gamesData)
       } catch (err) {
         console.error('Error loading games:', err)
-        setError(err instanceof Error ? err.message : 'Error desconocido')
+        // No mostrar error, solo log en consola
       } finally {
         setLoading(false) // ✅ Ocultar loading cuando termine
       }
@@ -42,7 +36,7 @@ export function GamesList() {
     loadGames()
   }, [])
 
-  // ✅ Loading screen - esto es lo que quieres
+  // ✅ Loading screen - solo esto
   if (loading) {
     return (
       <div className="flex items-center justify-center py-12">
@@ -52,31 +46,7 @@ export function GamesList() {
     )
   }
 
-  // Error state
-  if (error) {
-    return (
-      <div className="text-center py-12">
-        <p className="text-destructive mb-4">Error: {error}</p>
-        <button 
-          onClick={() => window.location.reload()} 
-          className="px-4 py-2 bg-primary text-primary-foreground rounded"
-        >
-          Reintentar
-        </button>
-      </div>
-    )
-  }
-
-  // No games
-  if (games.length === 0) {
-    return (
-      <div className="text-center py-12">
-        <p className="text-muted-foreground">No hay juegos disponibles</p>
-      </div>
-    )
-  }
-
-  // Render games
+  // ✅ Cuando termine de cargar, mostrar los juegos
   return (
     <div className="space-y-4">
       {/* Tu contenido de juegos aquí */}
