@@ -2,6 +2,7 @@ import { GamesList } from "@/components/games-list"
 import { Header } from "@/components/header"
 import Head from 'next/head' // ✅ Importar Head
 import Script from 'next/script'
+import { GlobalLoading } from "@/components/global-loading"
 
 export default function HomePage() {
   return (
@@ -20,6 +21,7 @@ export default function HomePage() {
               Análisis avanzado y predicciones para los próximos juegos de la MLB Basado en los ultimos 10 juegos
             </p>
           </div>
+          <GlobalLoading />
           <GamesList />
         </main>
         
