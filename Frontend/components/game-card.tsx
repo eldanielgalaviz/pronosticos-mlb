@@ -17,10 +17,49 @@ export function GameCard({ game }: GameCardProps) {
   const [gameDetail, setGameDetail] = useState<GameDetail | null>(null)
   const [loadingPitchers, setLoadingPitchers] = useState(false)
 
-  const gameTime = new Date(game.date).toLocaleTimeString("es-ES", {
-    hour: "2-digit",
-    minute: "2-digit",
-  })
+  // Función para manejar correctamente las fechas
+  const getCorrectGameTime = (dateString: string) => {
+    // Si la fecha viene como string ISO, parseala correctamente
+    const gameDate = new Date(dateString)
+    
+    // Verifica si la fecha es válida
+    if (isNaN(gameDate.getTime())) {
+      console.warn('Invalid date:', dateString)
+      return { time: '--:--', date: new Date() }
+    }
+
+    // Para mostrar la hora en la zona horaria local del usuario
+    const gameTime = gameDate.toLocaleTimeString("es-ES", {
+      hour: "2-digit",
+      minute: "2-digit",
+      timeZone: 'America/Mexico_City' // Ajusta según tu zona horaria
+    })
+
+    return { time: gameTime, date: gameDate }
+  }
+
+  // Función alternativa si quieres usar la fecha tal como viene del servidor
+  const getLocalGameTime = (dateString: string) => {
+    // Crear la fecha sin conversión de zona horaria
+    let gameDate: Date
+    
+    if (dateString.includes('T')) {
+      // Si ya tiene formato ISO completo
+      gameDate = new Date(dateString)
+    } else {
+      // Si solo es fecha (YYYY-MM-DD), agregar hora local para evitar conversión UTC
+      gameDate = new Date(dateString + 'T00:00:00')
+    }
+
+    const gameTime = gameDate.toLocaleTimeString("es-ES", {
+      hour: "2-digit",
+      minute: "2-digit",
+    })
+
+    return { time: gameTime, date: gameDate }
+  }
+
+  const { time: gameTime } = getCorrectGameTime(game.date)
 
   // Función para obtener el variant y texto del status
   const getStatusDisplay = (status: string) => {
@@ -88,8 +127,6 @@ export function GameCard({ game }: GameCardProps) {
               <Clock className="h-4 w-4" />
               {gameTime}
             </div>
-            {/* Indicador EN VIVO al lado de la hora */}
-
           </div>
         </div>
       </CardHeader>
@@ -122,8 +159,6 @@ export function GameCard({ game }: GameCardProps) {
                 <span className="text-foreground">{game.home}</span>
               </div>
             </div>
-            {/* Indicador de LIVE si está en progreso */}
-  
           </div>
         )}
 
