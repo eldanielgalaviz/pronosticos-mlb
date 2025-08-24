@@ -22,7 +22,7 @@ export function GamesList() {
       
       try {
         // Tu llamada al backend aquí
-        const response = await fetch('/api/games') // Ajusta tu endpoint
+        const response = await fetch('/games') // Ajusta tu endpoint
         const gamesData = await response.json()
         setGames(gamesData)
       } catch (err) {
