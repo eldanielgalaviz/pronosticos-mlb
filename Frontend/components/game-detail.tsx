@@ -373,7 +373,7 @@ const gameData = liveGameData?.gameData
               <TabsTrigger value="pitchers">Pitchers</TabsTrigger>
               <TabsTrigger value="hitting">Bateo</TabsTrigger>
               <TabsTrigger value="bullpen">Bullpen</TabsTrigger>
-              <TabsTrigger value="form">Forma</TabsTrigger>
+              <TabsTrigger value="form">Victorias</TabsTrigger>
             </TabsList>
 
             <TabsContent value="live">
