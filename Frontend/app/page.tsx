@@ -1,13 +1,11 @@
 import { GamesList } from "@/components/games-list"
 import { Header } from "@/components/header"
-import Head from 'next/head' // ✅ Importar Head
+import Head from 'next/head'
 import Script from 'next/script'
-import { GlobalLoading } from "@/components/global-loading"
 
 export default function HomePage() {
   return (
     <>
-      {/* ✅ Head fuera del div principal */}
       <Head>
         <meta name="google-adsense-account" content="ca-pub-3982270058016354" />
       </Head>
@@ -21,11 +19,10 @@ export default function HomePage() {
               Análisis avanzado y predicciones para los próximos juegos de la MLB Basado en los ultimos 10 juegos
             </p>
           </div>
-          <GlobalLoading />
+          {/* ✅ El loading ahora está dentro de GamesList */}
           <GamesList />
         </main>
         
-        {/* Google AdSense Script - FORMATO CORRECTO PARA NEXT.JS */}
         <Script
           async
           src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3982270058016354"
