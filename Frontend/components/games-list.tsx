@@ -3,12 +3,12 @@
 import { useState, useEffect } from "react"
 import { GameCard } from "./game-card"
 import { Button } from "@/components/ui/button"
-import { Calendar, RefreshCw, AlertCircle } from "lucide-react"
+import { Calendar, RefreshCw, AlertCircle, Loader2 } from "lucide-react"
 import { getGamesByDate, type Game } from "@/lib/api"
 
 export function GamesList() {
   const [games, setGames] = useState<Game[]>([])
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState(true) // ✅ Cambié a true para mostrar spinner al inicio
   const [error, setError] = useState<string | null>(null)
   const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split("T")[0])
 
@@ -32,6 +32,16 @@ export function GamesList() {
 
   const refreshGames = () => {
     loadGames(selectedDate)
+  }
+
+  // ✅ Agregué el spinner que se muestra mientras loading es true
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center py-12">
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+        <span className="ml-2 text-muted-foreground">Cargando juegos...</span>
+      </div>
+    )
   }
 
   return (
