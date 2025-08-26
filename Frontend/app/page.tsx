@@ -60,13 +60,13 @@ export default function HomePage() {
           </div>
 
           {/* 🟢 Barra Social */}
-          <div className="mt-10 flex justify-center">
+          {/* <div className="mt-10 flex justify-center">
             <Script
               id="social-bar"
               src="//pl27509465.profitableratecpm.com/02/9c/15/029c150864519d747c9de77c68741df6.js"
               strategy="afterInteractive"
             />
-          </div>
+          </div> */}
         </main>
 
         {/* Google AdSense Script */}
