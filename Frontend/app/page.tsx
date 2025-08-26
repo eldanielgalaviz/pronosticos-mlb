@@ -1,6 +1,6 @@
 import { GamesList } from "@/components/games-list"
 import { Header } from "@/components/header"
-import Head from 'next.head'
+import Head from 'next/head'
 import Script from 'next/script'
 
 export default function HomePage() {
