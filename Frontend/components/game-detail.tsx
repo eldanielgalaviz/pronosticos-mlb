@@ -341,6 +341,7 @@ const gameData = liveGameData?.gameData
                 Probabilidad de Victoria
               </CardTitle>
             </CardHeader>
+
             <CardContent className="space-y-6">
               <div className="grid grid-cols-2 gap-6">
                 <div className="text-center space-y-2">
@@ -354,11 +355,18 @@ const gameData = liveGameData?.gameData
                   <Progress value={homeWinProbNum} className="h-2" />
                 </div>
               </div>
-              {/* Native Banner Ad */}
-                <div className="flex justify-center my-8">
+
+              {/* Native Banner Ad - CÓDIGO COMPLETO */}
+              <div className="flex justify-center my-8">
+                <div>
+                  <script 
+                    async 
+                    data-cfasync="false" 
+                    src="//pl27509271.profitableratecpm.com/e830eeaa0366677bb5b500cbe2869de5/invoke.js"
+                  ></script>
                   <div id="container-e830eeaa0366677bb5b500cbe2869de5"></div>
                 </div>
-              
+              </div>
 
               <div className="bg-muted/50 rounded-lg p-4">
                 <h4 className="font-semibold text-foreground mb-2">Justificación de la Predicción</h4>
@@ -369,7 +377,6 @@ const gameData = liveGameData?.gameData
                   {(prediction.factors.homeRecentForm * 10).toFixed(0)} victorias de los últimos 10 partidos también favorecen el pronóstico.
                 </p>
               </div>
-              
             </CardContent>
           </Card>
 
