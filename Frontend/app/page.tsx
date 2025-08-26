@@ -22,10 +22,7 @@ export default function HomePage() {
               Basado en los ultimos 10 juegos
             </p>
           </div>
-
-          {/* ✅ El loading ahora está dentro de GamesList */}
-          <GamesList />
-
+          
           {/* 🚀 Banner Publicitario */}
           <div className="mt-10 flex justify-center">
             <Script id="ads-banner" strategy="afterInteractive">
@@ -45,6 +42,10 @@ export default function HomePage() {
               strategy="afterInteractive"
             />
           </div>
+
+          {/* ✅ El loading ahora está dentro de GamesList */}
+          <GamesList />
+
 
           {/* 🔗 Smartlink */}
           <div className="mt-10 text-center">
