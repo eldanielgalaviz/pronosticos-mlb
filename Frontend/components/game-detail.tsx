@@ -354,6 +354,11 @@ const gameData = liveGameData?.gameData
                   <Progress value={homeWinProbNum} className="h-2" />
                 </div>
               </div>
+              {/* Native Banner Ad */}
+                <div className="flex justify-center my-8">
+                  <div id="container-e830eeaa0366677bb5b500cbe2869de5"></div>
+                </div>
+              
 
               <div className="bg-muted/50 rounded-lg p-4">
                 <h4 className="font-semibold text-foreground mb-2">Justificación de la Predicción</h4>
@@ -364,6 +369,7 @@ const gameData = liveGameData?.gameData
                   {(prediction.factors.homeRecentForm * 10).toFixed(0)} victorias de los últimos 10 partidos también favorecen el pronóstico.
                 </p>
               </div>
+              
             </CardContent>
           </Card>
 
