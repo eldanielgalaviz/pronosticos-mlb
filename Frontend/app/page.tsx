@@ -22,6 +22,7 @@ export default function HomePage() {
               Basado en los ultimos 10 juegos
             </p>
           </div>
+
           {/* ✅ El loading ahora está dentro de GamesList */}
           <GamesList />
 
@@ -41,6 +42,27 @@ export default function HomePage() {
             <Script
               id="ads-banner-src"
               src="//www.highperformanceformat.com/39c089ef1b2c7edeae4fe57c6e47834b/invoke.js"
+              strategy="afterInteractive"
+            />
+          </div>
+
+          {/* 🔗 Smartlink */}
+          <div className="mt-10 text-center">
+            <a
+              href="https://www.profitableratecpm.com/ykyz9cwg?key=0c5bc9aabe65b3c4e90097380d5d9ca9"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-blue-500 underline hover:text-blue-700"
+            >
+              👉 Ver más contenido aquí
+            </a>
+          </div>
+
+          {/* 🟢 Barra Social */}
+          <div className="mt-10 flex justify-center">
+            <Script
+              id="social-bar"
+              src="//pl27509465.profitableratecpm.com/02/9c/15/029c150864519d747c9de77c68741df6.js"
               strategy="afterInteractive"
             />
           </div>
