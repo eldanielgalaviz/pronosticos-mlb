@@ -32,7 +32,10 @@ async getGamesByDate(date: string) {
     },
   })) || [];
 }
-
+async getLiveGameData(gamePk: number) {
+  const res = await axios.get(`http://localhost:3001/game/${gamePk}`);
+  return res.data;
+}
 
 async getRecentGames(teamId: number, limit: number = 10) {
   const recentGames: any[] = []; // ⚡ indicamos tipo explícito

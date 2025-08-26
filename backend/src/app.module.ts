@@ -6,6 +6,7 @@ import { TeamsModule } from './teams/teams.module';
 import { PlayersModule } from './players/players.module';
 import { PredictionsModule } from './predictions/predictions.module';
 
+
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true }), // carga .env automáticamente
