@@ -376,7 +376,7 @@ const gameData = liveGameData?.gameData
                 <h4 className="font-semibold text-foreground mb-2">Justificación de la Predicción</h4>
                 <p className="text-sm text-muted-foreground">
                   Los {prediction.homeTeam} tienen ventaja debido a su superior ofensiva (wOBA:{" "}
-                  {prediction.factors.homeHitting.wOBA}) y la calidad de su pitcher abridor {prediction.homeStarterName}{" "}
+                  {Number(prediction.factors.homeHitting.wOBA).toFixed(3)}) y la calidad de su pitcher abridor {prediction.homeStarterName}{" "}
                   (ERA: {prediction.factors.homePitcherStats.era}). Sus{" "}
                   {(prediction.factors.homeRecentForm * 10).toFixed(0)} victorias de los últimos 10 partidos también favorecen el pronóstico.
                 </p>
