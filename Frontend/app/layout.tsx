@@ -7,7 +7,7 @@ import { GlobalLoading } from "@/components/global-loading"
 import "./globals.css"
 
 export const metadata: Metadata = {
-  title: "MLB Predictor - Análisis y Predicciones",
+  title: "Predicciones MLB GRATIS - Análisis y Predicciones",
   description: "Plataforma profesional de predicciones y estadísticas de MLB",
   generator: "v0.app",
 }
