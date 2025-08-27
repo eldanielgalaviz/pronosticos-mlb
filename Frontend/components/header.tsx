@@ -10,7 +10,7 @@ export function Header() {
             <Baseball className="h-6 w-6 text-primary-foreground" />
           </div>
           <div>
-            <h1 className="text-xl font-bold text-foreground">MLB Predictor</h1>
+            <h1 className="text-xl font-bold text-foreground">Predicciones MLB gratis</h1>
             <p className="text-sm text-muted-foreground">Análisis Profesional</p>
           </div>
         </div>
