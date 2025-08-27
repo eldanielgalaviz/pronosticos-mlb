@@ -10,6 +10,10 @@ export const metadata: Metadata = {
   title: "Predicciones MLB GRATIS - Análisis y Predicciones",
   description: "Plataforma profesional de predicciones y estadísticas de MLB",
   generator: "v0.app",
+  icons: {
+    icon: '/icon.png', // Cambiar de '/favicon.ico' a '/icon.png'
+    shortcut: '/icon.png',
+  },
 }
 
 export default function RootLayout({
