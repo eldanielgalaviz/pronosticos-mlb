@@ -267,6 +267,10 @@ const gameData = liveGameData?.gameData
   const currentPlay = liveData?.plays?.currentPlay
   const linescore = liveData?.linescore
   const boxscore = liveData?.boxscore
+  
+            const formatStat = (value: string | number, decimals: number = 3): string => {
+              return Number(value).toFixed(decimals)
+            }
 
   // Estado actual del juego
   const currentInning = linescore?.currentInning || 1
@@ -606,19 +610,19 @@ const gameData = liveGameData?.gameData
                   <CardContent className="space-y-3">
                     <div className="flex justify-between">
                       <span className="text-muted-foreground">ERA:</span>
-                      <span className="font-medium text-foreground">{prediction.factors.awayPitcherStats.era}</span>
+                      <span className="font-medium text-foreground">{Number(prediction.factors.awayPitcherStats.era).toFixed(2)}</span>
                     </div>
                     <div className="flex justify-between">
                       <span className="text-muted-foreground">WHIP:</span>
-                      <span className="font-medium text-foreground">{prediction.factors.awayPitcherStats.whip}</span>
+                      <span className="font-medium text-foreground">{Number(prediction.factors.awayPitcherStats.whip).toFixed(3)}</span>
                     </div>
                     <div className="flex justify-between">
                       <span className="text-muted-foreground">K/9:</span>
-                      <span className="font-medium text-foreground">{prediction.factors.awayPitcherStats.kPer9}</span>
+                      <span className="font-medium text-foreground">{Number(prediction.factors.awayPitcherStats.kPer9).toFixed(1)}</span>
                     </div>
                     <div className="flex justify-between">
                       <span className="text-muted-foreground">HR/9:</span>
-                      <span className="font-medium text-foreground">{prediction.factors.awayPitcherStats.hrPer9}</span>
+                      <span className="font-medium text-foreground">{Number(prediction.factors.awayPitcherStats.hrPer9).toFixed(2)}</span>
                     </div>
                   </CardContent>
                 </Card>
@@ -631,24 +635,25 @@ const gameData = liveGameData?.gameData
                   <CardContent className="space-y-3">
                     <div className="flex justify-between">
                       <span className="text-muted-foreground">ERA:</span>
-                      <span className="font-medium text-foreground">{prediction.factors.homePitcherStats.era}</span>
+                      <span className="font-medium text-foreground">{Number(prediction.factors.homePitcherStats.era).toFixed(2)}</span>
                     </div>
                     <div className="flex justify-between">
                       <span className="text-muted-foreground">WHIP:</span>
-                      <span className="font-medium text-foreground">{prediction.factors.homePitcherStats.whip}</span>
+                      <span className="font-medium text-foreground">{Number(prediction.factors.homePitcherStats.whip).toFixed(3)}</span>
                     </div>
                     <div className="flex justify-between">
                       <span className="text-muted-foreground">K/9:</span>
-                      <span className="font-medium text-foreground">{prediction.factors.homePitcherStats.kPer9}</span>
+                      <span className="font-medium text-foreground">{Number(prediction.factors.homePitcherStats.kPer9).toFixed(1)}</span>
                     </div>
                     <div className="flex justify-between">
                       <span className="text-muted-foreground">HR/9:</span>
-                      <span className="font-medium text-foreground">{prediction.factors.homePitcherStats.hrPer9}</span>
+                      <span className="font-medium text-foreground">{Number(prediction.factors.homePitcherStats.hrPer9).toFixed(2)}</span>
                     </div>
                   </CardContent>
                 </Card>
               </div>
             </TabsContent>
+
 
             <TabsContent value="hitting">
               <div className="grid md:grid-cols-2 gap-6">
@@ -662,15 +667,21 @@ const gameData = liveGameData?.gameData
                   <CardContent className="space-y-3">
                     <div className="flex justify-between">
                       <span className="text-muted-foreground">wOBA:</span>
-                      <span className="font-medium text-foreground">{prediction.factors.awayHitting.wOBA}</span>
+                      <span className="font-medium text-foreground">
+                        {formatStat(prediction.factors.awayHitting.wOBA)}
+                      </span>
                     </div>
                     <div className="flex justify-between">
                       <span className="text-muted-foreground">BABIP:</span>
-                      <span className="font-medium text-foreground">{prediction.factors.awayHitting.babip}</span>
+                      <span className="font-medium text-foreground">
+                        {formatStat(prediction.factors.awayHitting.babip)}
+                      </span>
                     </div>
                     <div className="flex justify-between">
                       <span className="text-muted-foreground">HR/Juego:</span>
-                      <span className="font-medium text-foreground">{prediction.factors.awayHitting.hrPerGame}</span>
+                      <span className="font-medium text-foreground">
+                        {formatStat(prediction.factors.awayHitting.hrPerGame)}
+                      </span>
                     </div>
                   </CardContent>
                 </Card>
@@ -685,15 +696,21 @@ const gameData = liveGameData?.gameData
                   <CardContent className="space-y-3">
                     <div className="flex justify-between">
                       <span className="text-muted-foreground">wOBA:</span>
-                      <span className="font-medium text-foreground">{prediction.factors.homeHitting.wOBA}</span>
+                      <span className="font-medium text-foreground">
+                        {formatStat(prediction.factors.homeHitting.wOBA)}
+                      </span>
                     </div>
                     <div className="flex justify-between">
                       <span className="text-muted-foreground">BABIP:</span>
-                      <span className="font-medium text-foreground">{prediction.factors.homeHitting.babip}</span>
+                      <span className="font-medium text-foreground">
+                        {formatStat(prediction.factors.homeHitting.babip)}
+                      </span>
                     </div>
                     <div className="flex justify-between">
                       <span className="text-muted-foreground">HR/Juego:</span>
-                      <span className="font-medium text-foreground">{prediction.factors.homeHitting.hrPerGame}</span>
+                      <span className="font-medium text-foreground">
+                        {formatStat(prediction.factors.homeHitting.hrPerGame)}
+                      </span>
                     </div>
                   </CardContent>
                 </Card>
@@ -712,11 +729,12 @@ const gameData = liveGameData?.gameData
                   <CardContent className="space-y-3">
                     <div className="flex justify-between">
                       <span className="text-muted-foreground">ERA:</span>
-                      <span className="font-medium text-foreground">{prediction.factors.awayBullpen.era}</span>
+                      <span className="font-medium text-foreground">{Number(prediction.factors.awayBullpen.era).toFixed(2)}</span>
+
                     </div>
                     <div className="flex justify-between">
                       <span className="text-muted-foreground">WHIP:</span>
-                      <span className="font-medium text-foreground">{prediction.factors.awayBullpen.whip}</span>
+                      <span className="font-medium text-foreground">{Number(prediction.factors.awayBullpen.whip).toFixed(2)}</span>
                     </div>
                   </CardContent>
                 </Card>
@@ -731,11 +749,11 @@ const gameData = liveGameData?.gameData
                   <CardContent className="space-y-3">
                     <div className="flex justify-between">
                       <span className="text-muted-foreground">ERA:</span>
-                      <span className="font-medium text-foreground">{prediction.factors.homeBullpen.era}</span>
+                      <span className="font-medium text-foreground">{Number(prediction.factors.homeBullpen.era).toFixed(2)}</span>
                     </div>
                     <div className="flex justify-between">
                       <span className="text-muted-foreground">WHIP:</span>
-                      <span className="font-medium text-foreground">{prediction.factors.homeBullpen.whip}</span>
+                      <span className="font-medium text-foreground">{Number(prediction.factors.homeBullpen.whip).toFixed(2)}</span>
                     </div>
                   </CardContent>
                 </Card>
