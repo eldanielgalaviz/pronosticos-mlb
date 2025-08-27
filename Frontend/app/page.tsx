@@ -8,6 +8,7 @@ export default function HomePage() {
     <>
       <Head>
         <meta name="google-adsense-account" content="ca-pub-3982270058016354" />
+        <meta name="google-site-verification" content="jV0KzUpyuzexdw8gPsrPrm3QhmAPSW1JkZw6RvCxgYU" />
       </Head>
 
       <div className="min-h-screen bg-background">
@@ -15,7 +16,7 @@ export default function HomePage() {
         <main className="container mx-auto px-4 py-8">
           <div className="mb-8">
             <h1 className="text-4xl font-bold text-foreground mb-2">
-              MLB Predictions & Analytics
+              Predicciones MLB 
             </h1>
             <p className="text-muted-foreground text-lg">
               Análisis avanzado y predicciones para los próximos juegos de la MLB
@@ -76,6 +77,8 @@ export default function HomePage() {
           crossOrigin="anonymous"
           strategy="afterInteractive"
         />
+        
+        
       </div>
     </>
   )
