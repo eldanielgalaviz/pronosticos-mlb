@@ -8,6 +8,33 @@ import { Progress } from "@/components/ui/progress"
 import { Target, Users, Shield, Zap, AlertCircle, Loader2, Play } from "lucide-react"
 import { getPrediction, getGameDetail, type Prediction, type GameDetail as GameDetailType } from "@/lib/api"
 
+
+function NativeBannerHighPerformance() {
+  useEffect(() => {
+    const script = document.createElement("script")
+    script.type = "text/javascript"
+    script.src = "//www.highperformanceformat.com/39c089ef1b2c7edeae4fe57c6e47834b/invoke.js"
+    script.async = true
+
+    const banner = document.getElementById("highperf-banner");
+    if (banner) {
+      banner.appendChild(script);
+    }
+
+    // Configuración del banner
+    (window as any).atOptions = {
+      key: "39c089ef1b2c7edeae4fe57c6e47834b",
+      format: "iframe",
+      height: 60,
+      width: 468,
+      params: {}
+    }
+  }, [])
+
+  return <div id="highperf-banner" className="flex justify-center my-8"></div>
+}
+
+
 function BaseballDiamond({ basesOccupied = { first: false, second: false, third: false }, runners = {} }) {
   return (
     <div className="relative w-48 h-48 mx-auto">
@@ -346,6 +373,7 @@ const gameData = liveGameData?.gameData
               </CardTitle>
             </CardHeader>
 
+
             <CardContent className="space-y-6">
               <div className="grid grid-cols-2 gap-6">
                 <div className="text-center space-y-2">
@@ -359,6 +387,10 @@ const gameData = liveGameData?.gameData
                   <Progress value={homeWinProbNum} className="h-2" />
                 </div>
               </div>
+              
+
+              {/* Native Banner Ad */}
+                <div className="flex justify-center my-8">
 
               {/* Native Banner Ad - CÓDIGO COMPLETO */}
               <div className="flex justify-center my-8">
@@ -370,7 +402,23 @@ const gameData = liveGameData?.gameData
                   ></script>
                   <div id="container-e830eeaa0366677bb5b500cbe2869de5"></div>
                 </div>
+              
               </div>
+              </div>
+              {/* Primer Native Banner Ad */}
+<div className="flex justify-center my-8">
+  <div>
+    <script 
+      async 
+      data-cfasync="false" 
+      src="//pl27509271.profitableratecpm.com/e830eeaa0366677bb5b500cbe2869de5/invoke.js"
+    ></script>
+    <div id="container-e830eeaa0366677bb5b500cbe2869de5"></div>
+  </div>
+</div>
+
+{/* Segundo Native Banner Ad */}
+<NativeBannerHighPerformance />
 
               <div className="bg-muted/50 rounded-lg p-4">
                 <h4 className="font-semibold text-foreground mb-2">Justificación de la Predicción</h4>
